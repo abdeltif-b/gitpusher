@@ -9,6 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { FileContent } from "@/components/FileContent";
 import { readRepositoryFiles } from "@/lib/actions";
 
 type repositoryFilesType = { type: string; sha: string; path: string };
@@ -48,6 +49,9 @@ export const RepositoryFiles = async ({ full_name, default_branch }: { full_name
                 );
               })}
             </ScrollArea>
+          </div>
+          <div className="p-3 mt-3">
+            <FileContent full_name={"abdeltif-b/test-gitpusher"} path={"README.md"} />
           </div>
         </div>
       </DialogContent>
