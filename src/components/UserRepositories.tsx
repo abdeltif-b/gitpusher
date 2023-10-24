@@ -2,25 +2,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { getErrorMessage } from "@/lib/utils";
-import { getServerSession } from "next-auth";
-import { options } from "@/app/api/auth/[...nextauth]/options";
 import { RepositoryFiles } from "@/components/RepositoryFiles";
+import { readRepositories } from "@/lib/actions";
 
-const readRepositories = async () => {
-  const session = await getServerSession(options);
-
-  try {
-    const url = `https://api.github.com/search/repositories?q=user:${session?.user?.name}`;
-
-    const res = await fetch(url, { next: { tags: ["readRepositories"] }, cache: "no-store" });
-    if (!res.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    return res.json();
-  } catch (error) {
-    return { error: getErrorMessage(error) };
-  }
+type userRepositoriesType = {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  description: string;
+  html_url: string;
+  full_name: string;
+  default_branch: string;
 };
 
 export const UserRepositories = async () => {
@@ -28,14 +21,15 @@ export const UserRepositories = async () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {data.items.map((item) => (
+      {data.items.map((item: userRepositoriesType) => (
         <Card key={item.id}>
           <CardHeader>
             <CardTitle>{item.name}</CardTitle>
             <CardDescription>
               <span className="flex flex-col">
-                <span>Created at: {item.created_at}</span>
-                <span>Updated at: {item.updated_at}</span>
+                {/* a dirty way to format the date (I might use date-fns for better formatting) */}
+                <span>Created at: {item.created_at.replace("T", " ").replace("Z", "")}</span>
+                <span>Updated at: {item.updated_at.replace("T", " ").replace("Z", "")}</span>
               </span>
             </CardDescription>
           </CardHeader>

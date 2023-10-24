@@ -8,22 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { getErrorMessage } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { readRepositoryFiles } from "@/lib/actions";
 
-const readRepositoryFiles = async (full_name: string, default_branch: string) => {
-  try {
-    const url = `https://api.github.com/repos/${full_name}/git/trees/${default_branch}?recursive=1`;
-
-    const res = await fetch(url, { next: { tags: ["readRepositoryFiles"] }, cache: "no-store" });
-    if (!res.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    return res.json();
-  } catch (error) {
-    return { error: getErrorMessage(error) };
-  }
-};
+type repositoryFilesType = { type: string; sha: string; path: string };
 
 export const RepositoryFiles = async ({ full_name, default_branch }: { full_name: string; default_branch: string }) => {
   const data = await readRepositoryFiles(full_name, default_branch);
@@ -36,28 +24,32 @@ export const RepositoryFiles = async ({ full_name, default_branch }: { full_name
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {full_name} <i className="text-sm text-gray-600">({default_branch})</i>
-          </DialogTitle>
-          <DialogDescription>Select one file from this repo to fetche its content.</DialogDescription>
-        </DialogHeader>
-        <ScrollArea className="max-h-[700px] w-xl rounded-md p-4 mt-4">
-          {data.tree?.map((item) => {
-            return item.type == "tree" ? (
-              <span key={item.sha} className="flex items-center">
-                <ChevronRightIcon className="mr-2 h-4 w-4" />
-                <b>{item.path}</b>
-              </span>
-            ) : (
-              <span key={item.sha} className="flex items-center">
-                <FileIcon className="mr-2 h-4 w-4" />
-                {item.path}
-              </span>
-            );
-          })}
-        </ScrollArea>
+      <DialogContent className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}>
+        <div className="flex space-x-10">
+          <div>
+            <DialogHeader>
+              <DialogTitle>
+                {full_name} <i className="text-sm text-gray-600">({default_branch})</i>
+              </DialogTitle>
+              <DialogDescription>Select one file from this repo to fetch its content.</DialogDescription>
+            </DialogHeader>
+            <ScrollArea className="max-h-[700px] w-2xl rounded-md p-4 mt-4">
+              {data.tree?.map((item: repositoryFilesType) => {
+                return item.type == "tree" ? (
+                  <span key={item.sha} className="flex items-center">
+                    <ChevronRightIcon className="mr-2 h-4 w-4" />
+                    <b>{item.path}</b>
+                  </span>
+                ) : (
+                  <span key={item.sha} className="flex items-center">
+                    <FileIcon className="mr-2 h-4 w-4" />
+                    {item.path}
+                  </span>
+                );
+              })}
+            </ScrollArea>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
