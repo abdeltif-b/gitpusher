@@ -4,24 +4,14 @@ import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { RepositoryFiles } from "@/components/RepositoryFiles";
 import { readRepositories } from "@/lib/actions";
-
-type userRepositoriesType = {
-  id: string;
-  name: string;
-  created_at: string;
-  updated_at: string;
-  description: string;
-  html_url: string;
-  full_name: string;
-  default_branch: string;
-};
+import { userRepositoriesItemType } from "@/lib/types";
 
 export const UserRepositories = async () => {
   const data = await readRepositories();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {data.items.map((item: userRepositoriesType) => (
+      {data.items.map((item: userRepositoriesItemType) => (
         <Card key={item.id}>
           <CardHeader>
             <CardTitle>{item.name}</CardTitle>

@@ -11,10 +11,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileContent } from "@/components/FileContent";
 import { readRepositoryFiles } from "@/lib/actions";
+import { repositoryFilesItemType, repositoryFilesProps } from "@/lib/types";
 
-type repositoryFilesType = { type: string; sha: string; path: string };
-
-export const RepositoryFiles = async ({ full_name, default_branch }: { full_name: string; default_branch: string }) => {
+export const RepositoryFiles = async ({ full_name, default_branch }: repositoryFilesProps) => {
   const data = await readRepositoryFiles(full_name, default_branch);
 
   return (
@@ -25,17 +24,17 @@ export const RepositoryFiles = async ({ full_name, default_branch }: { full_name
         </Button>
       </DialogTrigger>
 
-      <DialogContent className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}>
+      <DialogContent className={"lg:max-w-screen-lg max-h-screen"}>
         <div className="flex space-x-10">
-          <div>
-            <DialogHeader>
-              <DialogTitle>
-                {full_name} <i className="text-sm text-gray-600">({default_branch})</i>
-              </DialogTitle>
-              <DialogDescription>Select one file from this repo to fetch its content.</DialogDescription>
-            </DialogHeader>
-            <ScrollArea className="max-h-[700px] w-2xl rounded-md p-4 mt-4">
-              {data.tree?.map((item: repositoryFilesType) => {
+          <ScrollArea className="max-h-[700px] w-[500px] rounded-md p-4 mt-4">
+            <div>
+              <DialogHeader>
+                <DialogTitle>
+                  {full_name} <i className="text-sm text-gray-600">({default_branch})</i>
+                </DialogTitle>
+                <DialogDescription>Select one file from this repo to fetch its content.</DialogDescription>
+              </DialogHeader>
+              {data.tree?.map((item: repositoryFilesItemType) => {
                 return item.type == "tree" ? (
                   <span key={item.sha} className="flex items-center">
                     <ChevronRightIcon className="mr-2 h-4 w-4" />
@@ -48,8 +47,8 @@ export const RepositoryFiles = async ({ full_name, default_branch }: { full_name
                   </span>
                 );
               })}
-            </ScrollArea>
-          </div>
+            </div>
+          </ScrollArea>
           <div className="p-3 mt-3">
             <FileContent full_name={"abdeltif-b/test-gitpusher"} path={"README.md"} />
           </div>
