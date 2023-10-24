@@ -10,7 +10,7 @@ export default async function Page() {
   if (!session) redirect("api/auth/signin");
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center p-4 gap-4">
       <UserInfo />
       <UserRepositories />
     </div>
