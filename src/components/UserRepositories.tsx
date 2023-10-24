@@ -5,6 +5,7 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { getErrorMessage } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
+import { RepositoryFiles } from "@/components/RepositoryFiles";
 
 const readRepositories = async () => {
   const session = await getServerSession(options);
@@ -45,6 +46,7 @@ export const UserRepositories = async () => {
                 <GitHubLogoIcon />
               </Link>
             </Button>
+            <RepositoryFiles full_name={item.full_name} default_branch={item.default_branch} />
           </CardFooter>
         </Card>
       ))}
