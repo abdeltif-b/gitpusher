@@ -1,5 +1,6 @@
 import { options } from "@/app/api/auth/[...nextauth]/options";
 import { UserInfo } from "@/components/UserInfo";
+import { UserRepositories } from "@/components/UserRepositories";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -11,6 +12,7 @@ export default async function Page() {
   return (
     <div className="flex flex-col items-center">
       <UserInfo />
+      <UserRepositories />
     </div>
   );
 }
