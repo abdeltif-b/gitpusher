@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# gitpusher
+
+![gitpusher-screenshot](/public/img/gitpusher-screenshot.png)
+GitPusher is a simple application that engages with your GitHub account post-sign-in using the GitHub API.
+
+## About the task
+
+GitPusher tries to answer this challenge:
+
+```
+Write a javascript app which interacts with the Github API and does the following:
+- authenticates itself with your github account and displays your username in the rendered page
+- lists all repositories in your account in the rendered page
+- prompts you to select a repository, upon which it fetches all files in the repo and logs their names to the console
+- randomly selects one file from the repo, fetches its contents, prepends "Komment Demo Task" to its top, and pushes it back to the repo
+- display a success (or failed) message on the rendered page once push is successful
+```
+
+## Technologies Used
+
+GitPusher is built using:
+
+- **Next.js:** A React framework for building web applications, this project uses App Routes structure.
+- **TypeScript:** A statically-typed superset of JavaScript.
+- **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
+- **Shadcn:** A UI component library.
+- **NextAuth:** An authentication library for secure authentication.
+
+## Preview
+
+You can visit the application at [https://gitpusher.vercel.app/](https://gitpusher.vercel.app/).
 
 ## Getting Started
 
-First, run the development server:
+If you'd like to run this project locally, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Clone this repository to your local machine.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   ```bash
+   git clone https://github.com/abdeltif-b/gitpusher.git
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Install project dependencies:
+   ```bash
+     npm install
+     # or
+     yarn install
+   ```
+3. Set up the environment variables for the services utilized, and refer to the [.env.example](https://github.com/abdeltif-b/gitpusher/blob/master/.env.example) file for guidance.
+4. Start the development server:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   ```bash
+     npm run dev
+     # or
+     yarn dev
+   ```
 
-## Learn More
+5. Open your browser and navigate to http://localhost:3000 to interact with the application.
 
-To learn more about Next.js, take a look at the following resources:
+## [Self NOTES] Potential Enhancements (Beyond Task Requirements)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Implement pagination for the repositories list (e.g. a case where a user have large number of repositories).
+- Allow users to choose a specific branch when fetching files from a repository (currently fetching from the default branch only).
+- Test edge cases like:
+  - Fetching repository with significant files
+  - Fetching file content with significant size.
+- Include private repositories (requires additional access privileges).
+- Expand the test coverage for GitHub API interactions.
+- Utilize Parallel Routes for managing distinct content within the same layout.
+- Note that repository files data is currently fetched for all repositories during the initial page load and cached for later use, which may or may not be suitable for scenarios involving users with numerous GitHub projects.
