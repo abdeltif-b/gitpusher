@@ -16,7 +16,8 @@ export const PushButton = ({ full_name, path }: fileContentProps) => {
     const data = await response.json();
     if (data.success) {
       alert("Message pushed to GitHub repository successfully.");
-      router.back();
+      // dirty way to refresh the page (I'm not using mutation to only refresh the query needed)
+      window.location.href = "/";
     } else {
       alert("Error: message not pushed to GitHub repository.");
     }
