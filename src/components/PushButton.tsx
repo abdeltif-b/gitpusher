@@ -27,7 +27,7 @@ export const PushButton = ({ full_name, path }: fileContentProps) => {
   return (
     <div>
       <div className="text-sm text-gray-500">
-        Click the button bollow to prepend "Komment Demo Task" to the top of this file and push it back to the repo
+        Click the button bollow to prepend (Komment Demo Task) to the top of this file and push it back to the repo
       </div>
       <Button className="w-full" onClick={handleClick}>
         <RotateCounterClockwiseIcon className="mr-2 h-4 w-4" />
