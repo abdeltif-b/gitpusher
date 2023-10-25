@@ -1,7 +1,7 @@
 export type repositoryFilesProps = { full_name: string; default_branch: string };
 export type fileContentProps = { full_name: string; path: string };
+export type repositoryFilesSelectProps = { type: string; sha: string; path: string };
 
-export type repositoryFilesItemType = { type: string; sha: string; path: string };
 export type userRepositoriesItemType = {
   id: string;
   name: string;
