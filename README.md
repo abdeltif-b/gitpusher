@@ -1,6 +1,6 @@
 # gitpusher
 
-![gitpusher-screenshot](/public/img/gitpusher-screenshot.png)
+![gitpusher-screenshot](https://github.com/abdeltif-b/gitpusher/assets/60190704/aa0d0316-be3f-48fb-b848-47d4434d690f)
 GitPusher is a simple application that engages with your GitHub account post-sign-in using the GitHub API.
 
 ## About the task
