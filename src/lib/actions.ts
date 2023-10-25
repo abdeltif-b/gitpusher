@@ -1,64 +1,88 @@
 import { options } from "@/app/api/auth/[...nextauth]/options";
-import { getErrorMessage } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 
 export const readRepositories = async () => {
   const session = await getServerSession(options);
+  const url = `https://api.github.com/search/repositories?q=user:${session?.user?.name}`;
 
   try {
-    const url = `https://api.github.com/search/repositories?q=user:${session?.user?.name}`;
-    const response = await fetch(url, { next: { tags: ["readRepositories"] } });
+    const response = await fetch(url, {
+      next: { tags: ["readRepositories"] },
+      cache: "no-store",
+      headers: {
+        Authorization: `token ${session?.accessToken}`,
+      },
+    });
     if (!response.ok) {
-      return { error: "Failed to fetch data" };
+      throw new Error(`Failed to fetch file: ${response.status} - ${await response.text()}`);
     }
     const data = response.json();
     return data;
   } catch (error) {
-    return { error: getErrorMessage(error) };
+    console.error("Error:", error);
   }
 };
 
 export const readRepositoryFiles = async (full_name: string, default_branch: string) => {
+  const session = await getServerSession(options);
+  const url = `https://api.github.com/repos/${full_name}/git/trees/${default_branch}?recursive=1`;
+
   try {
-    const url = `https://api.github.com/repos/${full_name}/git/trees/${default_branch}?recursive=1`;
-    const response = await fetch(url, { next: { tags: ["readRepositoryFiles"] } });
+    const response = await fetch(url, {
+      next: { tags: ["readRepositoryFiles"] },
+      cache: "no-store",
+      headers: {
+        Authorization: `token ${session?.accessToken}`,
+      },
+    });
     if (!response.ok) {
-      return { error: "Failed to fetch data" };
+      throw new Error(`Failed to fetch file: ${response.status} - ${await response.text()}`);
     }
     const data = response.json();
     return data;
   } catch (error) {
-    return { error: getErrorMessage(error) };
+    console.error("Error:", error);
   }
 };
 
 export const readFileContent = async (full_name: string, path: string) => {
+  const session = await getServerSession(options);
+  const url = `https://api.github.com/repos/${full_name}/contents/${path}`;
+
   try {
-    const url = `https://api.github.com/repos/${full_name}/contents/${path}`;
-    const response = await fetch(url, { next: { tags: ["readFileContent"] } });
+    const response = await fetch(url, {
+      next: { tags: ["readFileContent"] },
+      cache: "no-store",
+      headers: {
+        Authorization: `token ${session?.accessToken}`,
+      },
+    });
     if (!response.ok) {
-      return { error: "Failed to fetch data" };
+      throw new Error(`Failed to fetch file: ${response.status} - ${await response.text()}`);
     }
     const data = await response.json();
 
-    // convert blob to string
-    const fileContents = atob(data.content);
+    // decode the content
+    const decodedContent = Buffer.from(data.content, "base64").toString("utf-8");
 
-    return { fileContents: fileContents };
+    return { content: decodedContent };
   } catch (error) {
-    return { error: getErrorMessage(error) };
+    console.error("Error:", error);
   }
 };
 
 export const updateAndPushFileContent = async (full_name: string, path: string) => {
-  const token = "token";
-  const content = `Komment Demo Task (appended at ${new Date()})`;
+  const session = await getServerSession(options);
+  const content = `Komment Demo Task (appended at ${new Date().toISOString()})\n`;
+  const url = `https://api.github.com/repos/${full_name}/contents/${path}`;
 
   try {
     // get the current file content
-    const response = await fetch(`https://api.github.com/repos/${full_name}/contents/${path}`, {
+    const response = await fetch(url, {
+      next: { tags: ["updateAndPushFileContent"] },
+      cache: "no-store",
       headers: {
-        Authorization: `token ${token}`,
+        Authorization: `token ${session?.accessToken}`,
       },
     });
     if (!response.ok) {
@@ -72,10 +96,10 @@ export const updateAndPushFileContent = async (full_name: string, path: string) 
     const encodedContent = Buffer.from(updatedContent).toString("base64");
 
     // push to repo
-    const updateResponse = await fetch(`https://api.github.com/repos/${full_name}/contents/${path}`, {
+    const updateResponse = await fetch(url, {
       method: "PUT",
       headers: {
-        Authorization: `token ${token}`,
+        Authorization: `token ${session?.accessToken}`,
       },
       body: JSON.stringify({
         message: "Update file (pushed by GitPusher)",
