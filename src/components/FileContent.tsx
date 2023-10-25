@@ -1,26 +1,45 @@
-import { Button } from "@/components/ui/button";
+"use client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { RotateCounterClockwiseIcon } from "@radix-ui/react-icons";
-import { readFileContent } from "@/lib/actions";
+import { FileIcon } from "@radix-ui/react-icons";
+import { PushButton } from "@/components/PushButton";
+import { fileContentDataType, fileContentProps } from "@/lib/types";
+import { useEffect, useState } from "react";
 
-export const FileContent = async ({ full_name, path }: { full_name: string; path: string }) => {
-  const data = await readFileContent(full_name, path);
+export const FileContent = ({ full_name, path }: fileContentProps) => {
+  const [data, setData] = useState<fileContentDataType>({ content: "" });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const url = `/api/file-content?full_name=${full_name}&path=${path}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch");
+        }
+        const data = await response.json();
+        setData(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (path) fetchData();
+  }, [path]);
 
   return (
-    <Card>
+    <Card className="max-w-[500px]">
       <CardHeader>
-        <CardTitle>{full_name}</CardTitle>
-        <CardDescription>{path}</CardDescription>
+        <CardTitle className="flex">
+          <FileIcon className="mr-2 h-4 w-4" /> {path != "" ? path : <i>Select a file to display its content below</i>}
+        </CardTitle>
+        <CardDescription>{full_name}</CardDescription>
       </CardHeader>
-      <CardContent>{data.fileContents ?? <i>No file selected for display.</i>}</CardContent>
+      <CardContent className="font-mono whitespace-pre-line">
+        <div className="max-h-[500px] scrolling-auto scrolling-touch overflow-scroll">{data.content}</div>
+      </CardContent>
       <CardFooter className="gap-2 flex flex-col items-center">
-        <div className="text-sm text-gray-500">
-          Click the button bollow to prepend "Komment Demo Task" to the top of this file and push it back to the repo
-        </div>
-        <Button className="w-full">
-          <RotateCounterClockwiseIcon className="mr-2 h-4 w-4" />
-          Update & push to repo
-        </Button>
+        <PushButton full_name={full_name} path={path} />
       </CardFooter>
     </Card>
   );
