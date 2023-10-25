@@ -25,7 +25,7 @@ export const FileContent = ({ full_name, path }: fileContentProps) => {
     };
 
     if (path) fetchData();
-  }, [path]);
+  }, [full_name, path]);
 
   return (
     <Card className="max-w-[500px]">

@@ -35,7 +35,7 @@ export const RepositoryFiles = ({ full_name, default_branch }: repositoryFilesPr
     };
 
     fetchData();
-  }, []);
+  }, [full_name, default_branch]);
 
   return (
     <Dialog>
