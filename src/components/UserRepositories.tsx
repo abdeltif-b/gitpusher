@@ -14,7 +14,12 @@ export const UserRepositories = async () => {
       {data.items.map((item: userRepositoriesItemType) => (
         <Card key={item.id}>
           <CardHeader>
-            <CardTitle>{item.name}</CardTitle>
+            <CardTitle>
+              {item.name}{" "}
+              {item.visibility == "private" ? (
+                <span className="text-sm text-red-600">({item.visibility} repo)</span>
+              ) : null}
+            </CardTitle>
             <CardDescription>
               <span className="flex flex-col">
                 {/* a dirty way to format the date (I might use date-fns for better formatting) */}

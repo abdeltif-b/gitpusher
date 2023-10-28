@@ -5,6 +5,7 @@ export type repositoryFilesSelectItemType = { type: string; path: string };
 export type userRepositoriesItemType = {
   id: string;
   name: string;
+  visibility: string;
   created_at: string;
   updated_at: string;
   description: string;
